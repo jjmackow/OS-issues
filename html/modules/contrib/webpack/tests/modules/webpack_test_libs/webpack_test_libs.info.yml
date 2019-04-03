@@ -1,0 +1,16 @@
+name: 'Webpack test libraries'
+type: module
+description: 'Add webpack libraries for testing.'
+# core: 8.x
+package: 'Javascript'
+dependencies:
+  - webpack:webpack
+npm_dependencies:
+  - ramda
+  - apollo-boost
+
+# Information added by Drupal.org packaging script on 2019-02-22
+version: '8.x-1.0-alpha12'
+core: '8.x'
+project: 'webpack'
+datestamp: 1550828897
