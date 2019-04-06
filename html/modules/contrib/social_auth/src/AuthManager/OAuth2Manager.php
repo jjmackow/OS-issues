@@ -2,55 +2,103 @@
 
 namespace Drupal\social_auth\AuthManager;
 
+use Drupal\Core\Config\Config;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\social_api\AuthManager\OAuth2Manager as BaseOAuth2Manager;
+
 /**
  * Defines a basic OAuth2Manager.
  *
  * @package Drupal\social_auth
  */
-abstract class OAuth2Manager implements OAuth2ManagerInterface {
+abstract class OAuth2Manager extends BaseOAuth2Manager implements OAuth2ManagerInterface {
 
   /**
-   * The service client.
+   * Social Auth implementer settings.
    *
-   * @var mixed
+   * @var \Drupal\Core\Config\ImmutableConfig
    */
-  protected $client;
+  protected $settings;
 
   /**
-   * Access token for OAuth2 authentication.
+   * The scopes to be requested.
    *
-   * @var mixed
+   * @var string
    */
-  protected $accessToken;
+  protected $scopes;
 
   /**
-   * {@inheritdoc}
+   * The end points to be requested.
+   *
+   * @var string
    */
-  public function setClient($client) {
-    $this->client = $client;
-    return $this;
+  protected $endPoints;
+
+  /**
+   * The logger factory.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   */
+  protected $loggerFactory;
+
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\Config\Config $settings
+   *   The implementer settings.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   The logger factory.
+   */
+  public function __construct(Config $settings, LoggerChannelFactoryInterface $logger_factory) {
+    $this->settings = $settings;
+    $this->loggerFactory = $logger_factory;
+    $this->endPoints = $this->scopes = FALSE;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getClient() {
-    return $this->client;
+  public function getExtraDetails($method = 'GET', $domain = NULL) {
+    $endpoints = $this->getEndPoints();
+
+    // Stores the data mapped with endpoints define in settings.
+    $data = [];
+
+    if ($endpoints) {
+      // Iterates through endpoints define in settings and retrieves them.
+      foreach (explode(PHP_EOL, $endpoints) as $endpoint) {
+        // Endpoint is set as path/to/endpoint|name.
+        $parts = explode('|', $endpoint);
+
+        $data[$parts[1]] = $this->requestEndPoint($method, $parts[0], $domain);
+      }
+
+      return json_encode($data);
+    }
+
+    return NULL;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getAccessToken() {
-    return $this->accessToken;
+  public function getScopes() {
+    if ($this->scopes === FALSE) {
+      $this->scopes = $this->settings->get('scopes');
+    }
+
+    return $this->scopes;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setAccessToken($access_token) {
-    $this->accessToken = $access_token;
-    return $this;
+  public function getEndPoints() {
+    if ($this->endPoints === FALSE) {
+      $this->endPoints = $this->settings->get('endpoints');
+    }
+
+    return $this->endPoints;
   }
 
 }

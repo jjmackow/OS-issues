@@ -50,8 +50,8 @@ function social_swiftmail_preprocess_swiftmailer(array &$variables) {
     }
   }
   else {
-    $variables['site_name'] = t('Open Social');
-    $variables['site_slogan'] = '"' . t('Make your people bloom') . '"';
+    $variables['site_name'] = t('Created by <a href="http://northconway.com">northConway online</a> with Open Social');
+    $variables['site_slogan'] = '"' . t('Informing & Engaging the KLP Community') . '"';
   }
 
   // Try to add a heading message.

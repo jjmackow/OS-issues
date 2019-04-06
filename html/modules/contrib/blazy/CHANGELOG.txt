@@ -1,4 +1,24 @@
 
+Blazy 8.x-2.0-dev, 2019-04-03
+-----------------------------
+- Updated tests for D8.7+ depreciation compatibility.
+- Enforced Blazy loader to prevent JS error due to being optional.
+- Fixed for image error handling.
+
+Blazy 8.x-2.0-dev, 2019-04-02
+-----------------------------
+- Added support for Views Infinite Scroll, alike.
+
+Blazy 8.x-2.0-dev, 2019-04-01
+-----------------------------
+- Added check to drupalSettings before usage.
+
+Blazy 8.x-2.0-dev, 2019-03-31
+-----------------------------
+- Optimized IO integration with multiple instances.
+- Fixed for multi-breakpoint background derailed from original implementation.
+- Fixed for docs.
+
 Blazy 8.x-2.0-dev, 2019-03-30
 -----------------------------
 - Fixed for background SRC overlap when using multi-serving background images.

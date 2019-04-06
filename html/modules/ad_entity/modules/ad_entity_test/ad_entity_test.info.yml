@@ -7,8 +7,8 @@ dependencies:
   - ad_entity:ad_entity
   - drupal:filter
 
-# Information added by Drupal.org packaging script on 2019-02-13
-version: '8.x-1.0-beta32'
+# Information added by Drupal.org packaging script on 2019-04-02
+version: '8.x-1.0-beta33'
 core: '8.x'
 project: 'ad_entity'
-datestamp: 1550079184
+datestamp: 1554220086

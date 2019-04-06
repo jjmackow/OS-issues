@@ -1,6 +1,29 @@
-.navbar-default {
-  background-color: #1b5225!important;
+/*
+* font-family: 'Seymour One', sans-serif;
+* font-family: 'Khula', sans-serif;
+* font-family: 'Sahitya', serif;
+* font-family: 'Martel', serif; 
+*/
+body.path-frontpage{
+  width: 100%;
+  overflow-x: hidden;
 }
+.navbar-default {
+  background-color: #042ea1 !important;
+}
+.dialog-off-canvas-main-canvas .navbar-default .navbar-nav{
+  
+}
+.dialog-off-canvas-main-canvas .navbar-default .navbar-nav > li > a {
+  color: yellow;
+  fill: #ffffff;
+  font-size: 1.35rem;
+}
+
+.dialog-off-canvas-main-canvas .dropdown-menu {
+  font-size: 1.25rem;
+}
+
 #block-klp-anhomepageheroblock>.cover-wrap{
   
 }
@@ -19,11 +42,26 @@
   margin-bottom: 1em;
 }
 #block-klp-anhomepageheroblock>.cover-wrap>.hero-canvas h3{
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   border-bottom: 1px solid yellow;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1e5799+0,2989d8+32,207cca+71,7db9e8+100&1+8,0+100 */
+background: -moz-linear-gradient(left, rgba(30,87,153,1) 0%, rgba(33,100,169,1) 8%, rgba(41,137,216,0.74) 32%, rgba(32,124,202,0.32) 71%, rgba(125,185,232,0) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left, rgba(30,87,153,1) 0%,rgba(33,100,169,1) 8%,rgba(41,137,216,0.74) 32%,rgba(32,124,202,0.32) 71%,rgba(125,185,232,0) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, rgba(30,87,153,1) 0%,rgba(33,100,169,1) 8%,rgba(41,137,216,0.74) 32%,rgba(32,124,202,0.32) 71%,rgba(125,185,232,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#007db9e8',GradientType=1 ); /* IE6-9 */
+
+  
+
+  padding: 10px 40px;
+  border-radius: 80px 0 100px 0
+}
+#block-klp-anhomepageheroblock>.cover-wrap>.hero-canvas h3 div:nth-of-type(2){
+margin-left: 2.5em;
+
 }
 #block-klp-anhomepageheroblock>.cover-wrap>.hero-canvas .field--name-field-text-block em{
   color: yellow;
+  font-size:1.15em;
 }
 
 .stream .card {
@@ -40,7 +78,12 @@
   text-shadow: white 1px 1px 2px, white -1px -1px 2px;
   font-weight: 500;
 }
-
+.more-link{
+  padding: 2px 5px;
+  display: inline-block;
+  background-color: #f75940;
+  border-color: #f75940;
+}
 .flex-row {
   display: flex;
 }
@@ -65,8 +108,9 @@
 .path-user #auth_box input.form-control{
   width: 90%;
   min-width: 225px;
-  background: navy;
-  color: white;
+  background: #e7ea6fe0;
+  color: #0b1e86;
+  font-size: 1.25em;
 }
 .path-user #auth_box .card__nested-section{
   padding-top: 5px;
@@ -136,9 +180,14 @@
     border: 0px;
     width: 300px;
   }
+  .page-title {
+    width: 90%;
+  }
+
 }
 .view-weather-block{
-  background: rgba(113, 173, 89,.85);
+  background: rgba(26, 67, 147, 0.85);
+  color: yellow;
   box-shadow: rgb(132, 156, 205) -6px 5px 10px;
   padding: 5px 25px 25px 25px;
   margin-bottom: 15px;
@@ -240,6 +289,68 @@ body.page-node-type-weather .flex-row:nth-of-type(2n+1){
   border-radius: 3px;
   color: black;
 }
+#block-klp-content span.views-field.views-field-title > span > a,
+.region--content td.views-field-title a,
+.views-element-container.block-views-blockmeeting-minutes-block-1 div.views-field a{
+  color: #d61a1a;
+  font-size: larger;
+  font-weight: bold;   
+  transition-duration: 420ms; 
+}
+#block-klp-content span.views-field.views-field-title > span > a:focus,
+.region--content td.views-field-title a:focus,
+.views-element-container.block-views-blockmeeting-minutes-block-1 div.views-field a:focus,
+#block-klp-content span.views-field.views-field-title > span > a:hover,
+.region--content td.views-field-title a:hover,
+.views-element-container.block-views-blockmeeting-minutes-block-1 div.views-field a:hover{
+  color: #a31414;
+  text-shadow: orange 1px 1px 3px,white -1px -1px 3px;
+  
+}
+#block-quicknodeblock{
+  background: #0A1D60;
+  color: white;
+  padding: 10px;
+}
+#block-klp-content > div > div.view-header > div > div.views-view-grid,
+
+.blazy .grid__content.form-group{
+  padding: 5px;
+  border:.1 gray solid;
+  porder-radius: 4px;
+  box-shadow: black 3px 3px 13px;
+} 
+
+#block-klp-content > div > div.view-header > div > div.views-view-grid,
+.blazy .grid__content.form-group:nth-of-type(3n+1) {
+  padding: 10px;
+  background-color: rgba(255, 216, 176, 0.45);
+  border: 1px solid black;
+  
+}
+
+
+
+.blazy .grid__content.form-group:nth-of-type(3n) {
+  background-color: rgba(255, 216, 176, 0.15);
+}
+.blazy .grid__content.form-group:nth-of-type(3n+1) {
+  background-color: rgba(255, 216, 176, 0.45);
+  border: 1px solid black;
+  
+}
+.blazy .grid__content.form-grouptr:nth-of-type(3n+2) {
+  background-color: rgba(255, 216, 176, 0.25);
+}
+
+.path-gov h1{
+  font-family: 'Sahitya';
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #fbdb86;
+  text-shadow: black 2px 2px 4px, #fefbfb -1px -1px 4px;
+}
+
 .ui-accordion-header.ui-corner-top a{
   border-radius: 15px;
   margin: 5px;
@@ -248,7 +359,41 @@ body.page-node-type-weather .flex-row:nth-of-type(2n+1){
   background: yellow;
   display: block;
 }
+body.page-node-type-meeting-minutes h1{
+  font-family: 'Sahitya';
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #fbdb86;
+  text-shadow: black 2px 2px 4px, #fefbfb -1px -1px 4px;
+  
+}
 
+body.page-node-type-meeting-minutes .region--content article{
+  background: #fff4d6;
+  border: 1px solid gray;
+  margin-top: 5px;
+  border-radius: 20px;
+  box-shadow: black 2px 2px 4px;
+}
+
+.view-meeting-minutes .view-header h3{
+  color: #999986;
+  text-shadow: black 2px 2px 3px;
+  font-family: 'Seymour One', sans-serif
+}
+.view-display-id-block_most_recent .latest-meeting{
+  background: #fbdb86;
+  padding: 5px;
+  border: 1px solid gray;
+  border-radius: 4px;
+  box-shadow: #9c9c9c 2px 2px 4px;
+}
+
+.view-meeting-minutes.view-display-id-block_most_recent time{
+  color: #a31414;
+  font-size: larger;
+  font-weight: bold;
+}
 
 .ui-accordion-header.ui-corner-top.ui-accordion-header-collapsed a{
  }
@@ -281,4 +426,75 @@ body.page-node-type-weather .flex-row:nth-of-type(2n+1){
   color: #f75940;
   display: inline-block;  
   margin-left: 50px;
+}
+.page-node-type-book #content .region--content #block-klp-content>article{
+  background: #d4c762;
+  font-size: 1.75em;
+}
+.page-node-type-book #content .region--content #block-klp-content>article table{
+  
+  font-size: .7em;
+  background: rgba(255,255,255,.4);
+}
+.page-node-type-book #content .region--content #block-klp-content>article table td,
+.page-node-type-book #content .region--content #block-klp-content>article table th{
+  padding: 0 5px;
+}
+.page-node-type-book h1.page-title{
+  font-family: 'Sahitya';
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #fbdb86;
+  text-shadow: black 2px 2px 4px, #fefbfb -1px -1px 4px;
+}
+.page-node-type-book .region--complementary-top{
+  background: #1642d6;
+}
+.page-node-type-book .region--complementary-top #block-klp-booknavigation-2{
+  background: #0A1D60;
+  color: white;
+  padding: 10px;
+}
+
+
+#block-klp-booknavigation-2 .card__block{
+  font-family: 'Sahitya';
+  font-size: 1.5em;
+  }
+.cover-with-canvas {
+  padding: 10px 20px 30px 20px!important;
+}
+#block-klp-booknavigation-2 .card__block li{
+  border-bottom: 4px dotted black;
+}
+#block-klp-booknavigation-2 > div.card__block li.menu-item--active-trail > a{
+  display: block;
+  text-align: center;
+  padding: 2px 3px;
+  line-height: 1.2em;
+  text-shadow: white 1px 1px 4px, black -1px 1px 1px;
+  border-radius: 17px 0px 0px 420px;
+  background-image: linear-gradient(to right, rgba(255,255,255,.5),rgba(255,255,255,.7),rgba(255,255,255,.7),rgba(255,255,255,0));
+  font-weight: bold;
+  font-size: smaller;
+  font-variant: small-caps;
+}
+#block-klp-booknavigation-2 .card__block li:last-of-type{
+  border-bottom: 1px dotted black;
+}
+.cover-with-canvas .call-to-action{
+  margin-top: 1em;
+  padding: 10px;
+  border-radius: 10px;
+  display: inline-block;
+  font-size: 1.25em;
+  line-height: 1.1em;
+  background: #abde4c;
+  box-shadow: black 2px 2px 3px; 
+}
+.form-control {
+  color: #0320a7;
+  background-color: #fff;
+  border: 1px solid #adadad;
+  border-radius: 5px;
 }

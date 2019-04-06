@@ -14,7 +14,14 @@ trait BlazyKernelTestTrait {
    * Setup common Kernel classes.
    */
   protected function setUpKernelInstall() {
-    $this->installConfig(static::$modules);
+    $this->installConfig([
+      'field',
+      'image',
+      'responsive_image',
+      'node',
+      'views',
+      'blazy',
+    ]);
 
     $this->installSchema('user', ['users_data']);
     $this->installSchema('node', ['node_access']);
@@ -24,13 +31,14 @@ trait BlazyKernelTestTrait {
     $this->installEntitySchema('node');
     $this->installEntitySchema('file');
     $this->installEntitySchema('media');
-    $this->installEntitySchema('entity_test');
+    // @todo $this->installEntitySchema('entity_test');
   }
 
   /**
    * Setup common Kernel manager classes.
    */
   protected function setUpKernelManager() {
+    $this->fileSystem             = $this->container->get('file_system');
     $this->entityFieldManager     = $this->container->get('entity_field.manager');
     $this->fieldTypePluginManager = $this->container->get('plugin.manager.field.field_type');
     $this->formatterPluginManager = $this->container->get('plugin.manager.field.formatter');

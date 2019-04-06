@@ -88,6 +88,13 @@ abstract class BlazyManagerBase implements BlazyManagerInterface {
   private $isBlazyAttached;
 
   /**
+   * The blazy IO settings.
+   *
+   * @var object
+   */
+  protected $isIoSettings;
+
+  /**
    * Constructs a BlazyManager object.
    */
   public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeManagerInterface $entity_type_manager, ModuleHandlerInterface $module_handler, RendererInterface $renderer, ConfigFactoryInterface $config_factory, CacheBackendInterface $cache) {
@@ -182,7 +189,7 @@ abstract class BlazyManagerBase implements BlazyManagerInterface {
   /**
    * Returns array of needed assets suitable for #attached property.
    */
-  public function attach($attach = []) {
+  public function attach(array $attach = []) {
     $load   = [];
     $switch = empty($attach['media_switch']) ? '' : $attach['media_switch'];
 
@@ -207,29 +214,44 @@ abstract class BlazyManagerBase implements BlazyManagerInterface {
       }
     }
 
+    $io = $this->getIoSettings($attach);
     if (!isset($this->isBlazyAttached)) {
-      // Core Blazy libraries.
-      if (!empty($attach['blazy']) || (isset($attach['lazy']) && $attach['lazy'] == 'blazy')) {
-        $thold = trim($this->configLoad('io.threshold')) ?: '0';
-        $number = strpos($thold, '.') !== FALSE ? (float) $thold : (int) $thold;
-        $thold = strpos($thold, ',') !== FALSE ? array_map('trim', explode(',', $thold)) : [$number];
-
-        // Respects hook_blazy_attach_alter() for more fine-grained control.
-        foreach (['enabled', 'disconnect', 'rootMargin', 'threshold'] as $key) {
-          $default = $key == 'rootMargin' ? '0px' : FALSE;
-          $value = $key == 'threshold' ? $thold : $this->configLoad('io.' . $key);
-          $io[$key] = isset($attach['io.' . $key]) ? $attach['io.' . $key] : ($value ?: $default);
-        }
-
-        $load['drupalSettings']['blazy'] = $this->configLoad()['blazy'];
-        $load['drupalSettings']['blazyIo'] = $io;
-        $load['library'][] = 'blazy/load';
-      }
+      // Core Blazy libraries, enforced to prevent JS error when optional.
+      $load['library'][] = 'blazy/load';
+      $load['drupalSettings']['blazy'] = $this->configLoad('blazy');
+      $load['drupalSettings']['blazyIo'] = $io;
       $this->isBlazyAttached = TRUE;
+    }
+
+    // Adds AJAX helper to revalidate IO, if using IO with VIS, or alike.
+    if (!empty($attach['use_ajax']) && $io->enabled) {
+      $load['library'][] = 'blazy/bio.ajax';
     }
 
     $this->moduleHandler->alter('blazy_attach', $load, $attach);
     return $load;
+  }
+
+  /**
+   * Returns drupalSettings for IO.
+   */
+  public function getIoSettings(array $attach = []) {
+    if (!isset($this->isIoSettings)) {
+      $thold = trim($this->configLoad('io.threshold')) ?: '0';
+      $number = strpos($thold, '.') !== FALSE ? (float) $thold : (int) $thold;
+      $thold = strpos($thold, ',') !== FALSE ? array_map('trim', explode(',', $thold)) : [$number];
+
+      // Respects hook_blazy_attach_alter() for more fine-grained control.
+      foreach (['enabled', 'disconnect', 'rootMargin', 'threshold'] as $key) {
+        $default = $key == 'rootMargin' ? '0px' : FALSE;
+        $value = $key == 'threshold' ? $thold : $this->configLoad('io.' . $key);
+        $io[$key] = isset($attach['io.' . $key]) ? $attach['io.' . $key] : ($value ?: $default);
+      }
+
+      $this->isIoSettings = (object) $io;
+    }
+
+    return $this->isIoSettings;
   }
 
   /**
@@ -421,7 +443,7 @@ abstract class BlazyManagerBase implements BlazyManagerInterface {
       $settings['original_height'] = $item && isset($item->height) ? $item->height : NULL;
     }
 
-    $json = $sources = $styles = [];
+    $sources = $styles = [];
     $end = end($settings['breakpoints']);
 
     // Check for cropped images at the 5 given styles before any hard work.
@@ -451,7 +473,7 @@ abstract class BlazyManagerBase implements BlazyManagerInterface {
 
         $style->transformDimensions($dimensions, $settings['first_uri']);
         $padding = round((($dimensions['height'] / $dimensions['width']) * 100), 2);
-        $json['dimensions'][$width] = $padding;
+        $settings['blazy_data']['dimensions'][$width] = $padding;
 
         // Only set padding-bottom for the last breakpoint to avoid FOUC.
         if ($end['width'] == $breakpoint['width']) {
@@ -465,16 +487,16 @@ abstract class BlazyManagerBase implements BlazyManagerInterface {
       }
     }
 
-    // As of Blazy v1.6.0 applied to BG only.
-    if ($sources) {
-      $json['breakpoints'] = $sources;
-    }
-
     // Supported modules can add blazy_data as [data-blazy] to the container.
     // This also informs individual images to not work with dimensions any more
     // as _all_ breakpoint image styles contain 'crop'.
-    if ($json) {
-      $settings['blazy_data'] = $json;
+    // As of Blazy v1.6.0 applied to BG only.
+    if ($sources) {
+      $settings['blazy_data']['breakpoints'] = $sources;
+    }
+
+    if (!empty($settings['use_ajax'])) {
+      $settings['blazy_data']['useAjax'] = TRUE;
     }
   }
 

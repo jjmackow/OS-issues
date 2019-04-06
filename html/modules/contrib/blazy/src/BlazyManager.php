@@ -3,6 +3,7 @@
 namespace Drupal\blazy;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Cache\Cache;
 
@@ -103,8 +104,11 @@ class BlazyManager extends BlazyManagerBase {
     }
 
     $attributes = isset($build['attributes']) ? $build['attributes'] : [];
-    $item_attributes = isset($build['item_attributes']) ? $build['item_attributes'] : [];
     $url_attributes = $build['url_attributes'];
+
+    // Sanitize potential user-defined attributes such as from BlazyFilter.
+    // Skip attributes via $item, or by module, as they are not user-defined.
+    $item_attributes = empty($build['item_attributes']) ? [] : Blazy::sanitize($build['item_attributes']);
 
     // Extract field item attributes for the theme function, and unset them
     // from the $item so that the field template does not re-render them.
@@ -257,20 +261,30 @@ class BlazyManager extends BlazyManagerBase {
     unset($element['#build']);
 
     // Checks if we got some signaled attributes.
+    $commerce = isset($element['#ajax_replace_class']);
     $attributes = isset($element['#attributes']) ? $element['#attributes'] : [];
+    $attributes = isset($element['#theme_wrappers'], $element['#theme_wrappers']['container']['#attributes']) ? $element['#theme_wrappers']['container']['#attributes'] : $attributes;
     $cache = $this->getCacheMetadata($build);
     $settings = $this->prepareBuild($build);
 
-    // Take over elements for a grid display as this is all we need.
-    // We'll selectively pass $attributes to those who might need it far below.
+    // Take over elements for a grid display as this is all we need, learned
+    // from the issues such as: #2945524, or product variations.
+    // We'll selectively pass or work out $attributes far below.
     $element = BlazyGrid::build($build, $settings);
     $element['#attached'] = $this->attach($settings);
     $element['#cache'] = $cache;
 
-    // Signals other modules if they want to use it.
-    // Cannot merge it into BlazyGrid (wrapper_)attributes, we are done as grid.
     if ($attributes) {
-      $element['#container_attributes'] = $attributes;
+      // Signals other modules if they want to use it.
+      // Cannot merge it into BlazyGrid (wrapper_)attributes, done as grid.
+      // Use case: Product variations, best served by ElevateZoom Plus.
+      if ($commerce) {
+        $element['#container_attributes'] = $attributes;
+      }
+      else {
+        // Use case: VIS, can be blended with UL element safely down here.
+        $element['#attributes'] = NestedArray::mergeDeep($element['#attributes'], $attributes);
+      }
     }
 
     return $element;

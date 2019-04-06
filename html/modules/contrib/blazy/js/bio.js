@@ -37,20 +37,8 @@
   var _db = dBlazy;
   var _bioTick = 0;
   var _revTick = 0;
-
-  // PolyFill `isIntersecting` for Microsoft Edge 15 isIntersecting property.
-  // https://github.com/WICG/IntersectionObserver/issues/211#issuecomment-309144669
-  if ('IntersectionObserver' in _win &&
-    'IntersectionObserverEntry' in _win &&
-    'intersectionRatio' in _win.IntersectionObserverEntry.prototype &&
-    !('isIntersecting' in IntersectionObserverEntry.prototype)) {
-
-    Object.defineProperty(_win.IntersectionObserverEntry.prototype, 'isIntersecting', {
-      get: function () {
-        return this.intersectionRatio > 0;
-      }
-    });
-  }
+  var _disconnected = false;
+  var _observed = false;
 
   /**
    * Constructor for Bio, Blazy IntersectionObserver.
@@ -68,6 +56,7 @@
       error: false,
       success: false,
       observing: false,
+      useAjax: false,
       successClass: 'b-loaded',
       selector: '.b-lazy',
       errorClass: 'b-error',
@@ -76,9 +65,9 @@
       threshold: [0]
     };
 
-    me.opts = _db.extend({}, defaults, options || {});
-    me.opts.selector = me.opts.selector + ':not(.' + me.opts.successClass + ')';
-    me.elms = (me.opts.root || _doc).querySelectorAll(me.opts.selector);
+    me.options = _db.extend({}, defaults, options || {});
+    me.options.selector = me.options.selector + ':not(.' + me.options.successClass + ')';
+    me.elms = (me.options.root || _doc).querySelectorAll(me.options.selector);
     me.count = me.elms.length;
     me.counted = 0;
     me._er = -1;
@@ -87,7 +76,7 @@
 
     me.prepare();
 
-    // Initialize Blazy IntersectionObserver.
+    // Initializes Blazy IntersectionObserver.
     init(me);
   }
 
@@ -95,10 +84,12 @@
   var _proto = Bio.prototype;
   _proto.constructor = Bio;
 
-  // BC for interchanging with bLazy with Slick slidesToShow > 1 clones.
+  // BC for interchanging with bLazy.
   _proto.load = function (elms) {
     var me = this;
 
+    // Manually load elements regardless of being disconnected, or not, relevant
+    // for Slick slidesToShow > 1 which rebuilds clones of unloaded elements.
     if (me.isValid(elms)) {
       me.intersecting(elms);
     }
@@ -109,10 +100,18 @@
         }
       });
     }
+
+    if (!_disconnected) {
+      me.disconnect();
+    }
+  };
+
+  _proto.isLoaded = function (el) {
+    return el.classList.contains(this.options.successClass);
   };
 
   _proto.isValid = function (el) {
-    return typeof el === 'object' && typeof el.length === 'undefined' && !el.classList.contains(this.opts.successClass);
+    return typeof el === 'object' && typeof el.length === 'undefined' && !this.isLoaded(el);
   };
 
   _proto.prepare = function () {
@@ -122,10 +121,11 @@
   _proto.revalidate = function (force) {
     var me = this;
 
-    // No need to execute unless required such as by Slick slide changes.
-    // Prevents from too many revalidations due to always-rebuilt slick-clones.
-    if (((typeof force === 'undefined' && me.count !== me.counted) || force === true) && (_revTick < me.counted)) {
-      me.observe(true);
+    // Prevents from too many revalidations unless needed.
+    if ((me.count !== me.counted || force === true) && (_revTick < me.counted)) {
+      _disconnected = false;
+      me.elms = (me.options.root || _doc).querySelectorAll(me.options.selector);
+      me.observe();
 
       _revTick++;
     }
@@ -135,8 +135,11 @@
     var me = this;
 
     me.lazyLoad(el);
-    me.observer.unobserve(el);
     me.counted++;
+
+    if (!_disconnected) {
+      me.observer.unobserve(el);
+    }
   };
 
   _proto.lazyLoad = function (el) {
@@ -146,16 +149,16 @@
   _proto.success = function (el) {
     var me = this;
 
-    if (typeof me.opts.success === 'function') {
-      me.opts.success(el, me.opts);
+    if (typeof me.options.success === 'function') {
+      me.options.success(el, me.options);
     }
   };
 
   _proto.error = function (el) {
     var me = this;
 
-    if (typeof me.opts.error === 'function') {
-      me.opts.error(el, me.opts);
+    if (typeof me.options.error === 'function') {
+      me.options.error(el, me.options);
     }
   };
 
@@ -163,7 +166,7 @@
     var me = this;
 
     me[status === me._ok ? 'success' : 'error'](el);
-    el.classList.add(status === me._ok ? me.opts.successClass : me.opts.errorClass);
+    el.classList.add(status === me._ok ? me.options.successClass : me.options.errorClass);
   };
 
   _proto.removeAttrs = function (el, attrs) {
@@ -172,19 +175,19 @@
     });
   };
 
-  _proto.setAttrs = function (el, attrs, tag, tagSrc) {
+  _proto.setAttrs = function (el, attrs) {
     var me = this;
 
     _db.forEach(attrs, function (src) {
-      me.setAttr(el, src, tag, tagSrc);
+      me.setAttr(el, src);
     });
   };
 
-  _proto.setAttr = function (el, attr, tag, tagSrc) {
+  _proto.setAttr = function (el, attr, remove) {
     if (el.hasAttribute('data-' + attr)) {
       el.setAttribute(attr, el.getAttribute('data-' + attr));
-      if (typeof tag !== 'undefined') {
-        tag.src = el.getAttribute(tagSrc);
+      if (remove) {
+        el.removeAttribute('data-' + attr);
       }
     }
   };
@@ -193,14 +196,14 @@
     return el.nodeName.toLowerCase() === str;
   };
 
-  _proto.observe = function (revalidate) {
+  _proto.observe = function () {
     var me = this;
 
     _bioTick = me.elms.length;
     _db.forEach(me.elms, function (entry) {
       // Only observes if not already loaded.
-      if (!entry.classList.contains(me.opts.successClass) || revalidate === true) {
-        me.instance.observe(entry);
+      if (!me.isLoaded(entry)) {
+        me.observer.observe(entry);
       }
     });
   };
@@ -209,16 +212,18 @@
     var me = this;
 
     me.entries = entries;
-    me.observer = observer;
+    if (_disconnected) {
+      return;
+    }
 
     // Load each on entering viewport.
     _db.forEach(entries, function (entry) {
-      if (typeof me.opts.observing === 'function') {
-        me.opts.observing(entry, observer, me.opts);
+      if (typeof me.options.observing === 'function') {
+        me.options.observing(entry, observer, me.options);
       }
 
-      if (entry.isIntersecting) {
-        if (!entry.target.classList.contains(me.opts.successClass)) {
+      if (entry.intersectionRatio > 0 || entry.isIntersecting) {
+        if (!me.isLoaded(entry.target)) {
           me.intersecting(entry.target);
         }
 
@@ -226,25 +231,35 @@
       }
     });
 
+    me.disconnect();
+  };
+
+  _proto.disconnect = function () {
+    var me = this;
+
     // Disconnect when all entries are loaded, if so configured.
-    if ((_bioTick === 0 || me.count === me.counted) && me.opts.disconnect) {
-      observer.disconnect();
+    if ((_bioTick === 0 || me.count === me.counted) && me.options.disconnect) {
+      me.observer.disconnect();
+      _disconnected = true;
     }
   };
 
   function init(me) {
     var config = {
-      rootMargin: me.opts.rootMargin,
-      threshold: me.opts.threshold
+      rootMargin: me.options.rootMargin,
+      threshold: me.options.threshold
     };
 
-    // Initialize the IO.
-    me.instance = new IntersectionObserver(function (entries, observer) {
-      me.observing(entries, observer);
-    }, config);
+    // Initializes the IO.
+    me.observer = new IntersectionObserver(me.observing.bind(me), config);
 
-    // Start observing entries.
-    me.observe(false);
+    // Observes once on the page load regardless multiple observer instances.
+    // Possible as we nullify the root option to allow querying the DOM once.
+    if (!_observed) {
+      me.observe();
+
+      _observed = true;
+    }
   }
 
   return Bio;

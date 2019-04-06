@@ -1,8 +1,8 @@
 
 # ABOUT BLAZY
-Provides integration with bLazy to lazy load and multi-serve images to save
-bandwidth and server requests. The user will have faster load times and save
-data usage if they don't browse the whole page.
+Provides integration with bLazy and or Intersection Observer API to lazy load
+and multi-serve images to save bandwidth and server requests. The user will have
+faster load times and save data usage if they don't browse the whole page.
 
 ## REQUIREMENTS
 1. bLazy library:
@@ -53,9 +53,6 @@ Be sure to enable Blazy UI which can be uninstalled at production later.
 2. Add a Blazy formatter for the Media or Image field.
 3. Add any lightbox under **Media switcher** option.
 4. Limit the values to 1 under **Multiple field settings** > **Display**.
-5. Be sure to leave **Use field template** under **Style settings** unchecked.
-   If checked, the gallery is locked to a single entity, that is no Views
-   gallery, but gallery per field.
 
 #### Without **Blazy Grid**
 If you can't use **Blazy Grid** for a reason, maybe having a table, HTML list,
@@ -79,6 +76,16 @@ etc., try the following:
 2. Add a Blazy formatter for the Media or Image field.
 3. Add the relevant lightbox under **Media switcher** option based on the given
    CSS class at #1.
+
+
+**Important!**
+
+Be sure to leave **Use field template** under **Style settings** unchecked.
+If checked, the gallery is locked to a single entity, that is no Views gallery,
+but gallery per field. The same applies when using Blazy formatter with VIS
+pager, alike, or inside Slick Carousel, GridStack, etc. If confusing, just toggle this
+option, and you'll know which works. Only checked if Blazy formatter is a
+standalone output from Views so to use field template in this case.
 
 Check out the relevant sub-module docs for details.
 
@@ -164,17 +171,6 @@ least 7 lightboxes, and likely more.
 A full release should be reasonable after proper feedbacks from the community,
 some code cleanup, and optimization where needed. Patches are very much welcome.
 
-Alpha, Beta, DEV releases are for developers only. Beware of possible breakage.
-
-However if it is broken, unless an update is provided, running `drush cr` during
-DEV releases should fix most issues as we add new services, or change things.
-If you don't drush, before any module update, always open:
-
-[Performance](/admin/config/development/performance)
-
-And so you are ready to hit **Clear all caches** if any issue.
-Only at worst case, know how to run http://dgo.to/registry_rebuild safely.
-
 
 ## PROGRAMATICALLY
 See blazy.api.php for details.
@@ -197,7 +193,7 @@ See blazy.api.php for details.
 ## READ MORE
 See the project page on drupal.org:
 
-[Blazy module](http://drupal.org/project/blazy)
+* [Blazy module](http://drupal.org/project/blazy)
 
 See the bLazy docs at:
 

@@ -43,3 +43,61 @@ function klp_social_core_filter_process_format($element) {
 */
   return $element;
 }
+
+function klp_social_swiftmail_preprocess_swiftmailer(array &$variables) {
+  // Load default theme (not active).
+  $theme_id = \Drupal::config('system.theme')->get('default');
+
+  // Need to check this, since otherwise site-install will fail.
+  if (\Drupal::service('module_handler')->moduleExists('color')) {
+    // Load the colors.
+    $colors = color_get_palette($theme_id);
+  }
+
+  // Set variables from theme.
+  $logo = social_swiftmail_get_logo($theme_id);
+  $primary = $colors['brand-primary'];
+  $secondary = $colors['brand-secondary'];
+  $accent = $colors['brand-accent'];
+  $link = $colors['brand-link'];
+  $border_radius = Xss::filter(theme_get_setting('border_radius', $theme_id));
+
+  // Add variables to send to the html template.
+  $variables['logo'] = $logo;
+  $variables['primary'] = $primary;
+  $variables['secondary'] = $secondary;
+  $variables['accent'] = $accent;
+  $variables['link'] = $link;
+  $variables['border_radius'] = $border_radius;
+
+  $social_swiftmail_config = \Drupal::config('social_swiftmail.settings');
+  if ($social_swiftmail_config->get('remove_open_social_branding') === 1) {
+    $site_config = \Drupal::config('system.site');
+
+    if ($site_config) {
+      $variables['site_link'] = TRUE;
+      $variables['site_name'] = $site_config->get('name');
+      if ($site_config->get('slogan')) {
+        $variables['site_slogan'] = $site_config->get('slogan');
+      }
+    }
+  }
+  else {
+    $variables['site_name'] = t('created by northConway.com with Open Social');
+    $variables['site_slogan'] = '"' . t('the Kearsarge Light Pecinct Community') . '"';
+  }
+
+  // Try to add a heading message.
+  if ($user = user_load_by_mail($variables['message']['to'])) {
+    $message = $variables['message'];
+    $options = [
+      'langcode' => $message['langcode'],
+    ];
+
+    $replace = [
+      '%display_name' => $user->getDisplayName(),
+    ];
+    $variables['heading'] = t('Hi %display_name', $replace, $options);
+  }
+}
+
