@@ -512,13 +512,18 @@ body.page-node-type-meeting-minutes .region--content article{
 .page-node-type-book .region--complementary-top{
   background: #1642d6;
 }
+
+#block-klp-booknavigation-2 > h2{
+  font-size: 1.5rem;
+  font-family: 'Sahitya';
+  color: #fbdb86;
+  text-shadow: black 2px 2px 4px, #fefbfb -1px -1px 4px;  
+}
 .page-node-type-book .region--complementary-top #block-klp-booknavigation-2{
   background: #0A1D60;
   color: white;
   padding: 10px;
 }
-
-
 #block-klp-booknavigation-2 .card__block{
   font-family: 'Sahitya';
   font-size: 1.5em;
@@ -535,11 +540,17 @@ body.page-node-type-meeting-minutes .region--content article{
   padding: 2px 3px;
   line-height: 1.2em;
   text-shadow: white 1px 1px 4px, black -1px 1px 1px;
-  border-radius: 17px 0px 0px 420px;
+  border-radius: 2px 2px 2px 25px;
   background-image: linear-gradient(to right, rgba(255,255,255,.5),rgba(255,255,255,.7),rgba(255,255,255,.7),rgba(255,255,255,0));
   font-weight: bold;
   font-size: smaller;
   font-variant: small-caps;
+
+  color: #160704;
+  background-color: white;
+
+
+  
 }
 #block-klp-booknavigation-2 .card__block li:last-of-type{
   border-bottom: 1px dotted black;
@@ -596,13 +607,13 @@ color: #e38b48;
 }
 
 #block-klp-content > div > div.wx-header > span.wx-temp{
-  font-size: 2.25em;
+  font-size: 1.35em;
   color: white;
   text-align: center;
-  min-width: 100px;
-  width: 100px;
-  height: 100px;
-  padding-top: 20px;
+  min-width: 60px;
+  width: 60px;
+  height: 60px;
+  padding-top: 10px;
   display: inline-block;
   background: #95bcd9;
   margin-bottom: 5px;
@@ -612,7 +623,7 @@ color: #e38b48;
 }
 #block-klp-content > div > div.wx-header > span.wx-conditions{
   display: block;
-  font-size: 3em;
+  font-size: 1.75em;
   line-height: 1em;
   margin: 15px;
 }
@@ -674,7 +685,7 @@ color: #e38b48;
   clear: right;
   background: #95bcd9;
   margin-bottom: 5px;
-  font-size: 1.5em;
+  font-size: 1.25rem;
   padding: 5px;
   font-weight: bold;
   color: white;
@@ -701,4 +712,33 @@ color: #e38b48;
   color: #314a04;
   display: block;
   clear: both;
+}
+/*SIGNON WELCOME PAGE(S)*/
+body.user-logged-in section.row.with-title-region div.region--content section.block-system form fieldset.form-item h4.card__title div,
+#edit-email-notifications > h4{
+  color: Navy;
+  font-size: 2em;
+  font-variant: small-caps;
+}
+body.user-logged-in form fieldset div.panel-heading header div,
+body.user-logged-in.path-user header h5{
+  color: maroon;
+}
+body.user-logged-in form fieldset div.panel-heading select,
+.form-item-email-notifications-message-to-me-create-post-profile  select.form-control,
+form#user-form fieldset#edit-email-notifications div.select-wrapper select.form-control{
+  border-color: maroon;
+  color: navy;  
+}
+#bootstrap-panel--3 > h4:nth-child(1){
+  color: maroon;
+  font-size: 1.5em;
+}
+body.user-logged-in form fieldset label{
+  color: maroon;
+}
+
+body.user-logged-in.path-user section div.region--content .card{
+  color: #fefdc0;
+  
 }
