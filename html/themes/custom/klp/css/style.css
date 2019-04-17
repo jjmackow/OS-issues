@@ -407,7 +407,7 @@ body.page-node-type-weather .flex-row:nth-of-type(2n+1){
   display: block;
 }
 #block-klp-content > div > div:nth-of-type(odd){
-
+  background: #797373;
 }
 
 #block-klp-content > div > div:nth-of-type(even){
@@ -417,6 +417,15 @@ body.page-node-type-weather .flex-row:nth-of-type(2n+1){
   color: white;
   font-size: larger;
 } 
+#block-klp-content > div > div .card__link a{
+  display: block;
+  background: white;
+  padding: 2px 5px;
+  text-shadow: none;
+  border-radius: 3px;
+  box-shadow: brown 2px 2px 3px;
+}
+
 #ui-id-2 > div:nth-child(2) > div:nth-child(1) > span  *,
 #ui-id-2 > div > div.views-field.views-field-body > span > p{
   color: #672222!important;
@@ -598,12 +607,51 @@ color: #e38b48;
     display: inline-block;
     /*TEMP*/
 }
+.block-views-blockupcoming-events-block-current-alert .flex-row{
+  margin:2px;
+  color: white;
+  padding: 2px 5px;
+  transform: skewX(-4deg);
+  border-radius: 4px;
+  box-shadow: gray 1px 2px 4px;
+}
+.block-views-blockupcoming-events-block-current-alert .flex-row>div{
+  padding: 2px;
+  margin: 1px 2px;
+  line-height:1em;
+  border: .25 gray solid;
+  border-radius: 3px;
+}
+.block-views-blockupcoming-events-block-current-alert ul{
+  padding-left: 10px;
+}
+.block-views-blockupcoming-events-block-current-alert .flex-row:nth-of-type(3n){
+  background: #b13636;
+}
+.block-views-blockupcoming-events-block-current-alert .flex-row:nth-of-type(3n+1){
+  background: #e06666;
+}
+.block-views-blockupcoming-events-block-current-alert .flex-row:nth-of-type(3n+2){
+  background: #d84141;
+}
+.block-views-blockupcoming-events-block-current-alert .flex-row .date-time-pair{
+  color: yellow;
+}
+.block-views-blockupcoming-events-block-current-alert .flex-row .date-time-pair time{
+  display: block;
+  line-height:1.3em;
+  white-space: nowrap;
+}
+.block-views-blockupcoming-events-block-current-alert .flex-row .date-time-pair time:nth-of-type(1){
+  font-weight: bold;
+}
+
 #block-klp-content > div > div.view-header h1{
   color: white;
 }
 #block-klp-content > div > div.wx-header{
   display: flex!important;
-  background-color: white!important;
+  background-color: #953333!important;
 }
 
 #block-klp-content > div > div.wx-header > span.wx-temp{
@@ -641,6 +689,7 @@ color: #e38b48;
   display: inline;
   white-space: no-wrap;
 }
+
 #block-klp-content > div > div:nth-of-type(2){
   margin: 15px;
 }
@@ -648,13 +697,17 @@ color: #e38b48;
   margin: 5px;
   padding: 5px;
 }
-#block-klp-content > div > div:nth-of-type(odd){
-  background: #403d3d;
+.path-weather #block-klp-content > div > div:nth-of-type(odd){
+  background: #79a0be;
   margin: 5px;
   padding: 5px;
 }
-#block-klp-content > div > div:nth-of-type(even){
-  background: #565252;
+.path-weather #block-klp-content > div .wx-conditions{
+  color: white;
+  text-shadow: black 2px 2px 4px;  
+}
+.path-weather #block-klp-content > div > div:nth-of-type(even){
+  background: #385098;
   margin: 5px;
   padding: 5px;
   color: white;
@@ -665,10 +718,14 @@ color: #e38b48;
   color: black;
   font-weight: 600;
 }
-
+.view-weather
 #block-klp-content > div > div{
-  display: block;
+  display: flex;
 }
+.view-weather #block-klp-content > div > div{
+  display: inline-block;
+}
+
 #block-klp-content > div > div{
   clear: both;
 }
@@ -739,6 +796,6 @@ body.user-logged-in form fieldset label{
 }
 
 body.user-logged-in.path-user section div.region--content .card{
-  color: #fefdc0;
+  color: #6b3d01;
   
 }

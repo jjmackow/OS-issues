@@ -7,8 +7,8 @@ configure: autosave_form.admin_settings
 dependencies:
   - drupal:system (>=8.3)
 
-# Information added by Drupal.org packaging script on 2019-02-02
-version: '8.x-1.x-dev'
+# Information added by Drupal.org packaging script on 2019-04-11
+version: '8.x-1.0'
 core: '8.x'
 project: 'autosave_form'
-datestamp: 1549135687
+datestamp: 1554999791
